@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://sw1k5bbvol3i"]
+[gd_scene load_steps=6 format=3 uid="uid://sw1k5bbvol3i"]
 
 [ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/StyleBoxMobileButton.cs" id="2_0fely"]
 [ext_resource type="Script" uid="uid://b2vl0pocyunxe" path="res://addons/MobileControls/TextureMobileButton.cs" id="2_adjj0"]
+[ext_resource type="Script" uid="uid://b43einp16x7pp" path="res://addons/MobileControls/SafeAreaContainer.cs" id="3_0fely"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_adjj0"]
 bg_color = Color(0.6, 1, 0.6, 1)
@@ -45,3 +46,11 @@ metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
+
+[node name="SafeAreaContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("3_0fely")
+metadata/_custom_type_script = "uid://b43einp16x7pp"
