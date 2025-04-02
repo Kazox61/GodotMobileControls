@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://sw1k5bbvol3i"]
+
+[ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/StyleBoxMobileButton.cs" id="2_0fely"]
+[ext_resource type="Script" uid="uid://b2vl0pocyunxe" path="res://addons/MobileControls/TextureMobileButton.cs" id="2_adjj0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_adjj0"]
+bg_color = Color(0.6, 1, 0.6, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+corner_detail = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fely"]
+bg_color = Color(1, 0, 0, 1)
+
+[node name="Example" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureMobileButton" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset = Vector2(20, 20)
+script = ExtResource("2_adjj0")
+metadata/_custom_type_script = "uid://b2vl0pocyunxe"
+
+[node name="StyleBoxMobileButton" type="Control" parent="."]
+custom_minimum_size = Vector2(300, 100)
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset = Vector2(150, 50)
+script = ExtResource("2_0fely")
+Normal = SubResource("StyleBoxFlat_adjj0")
+Disabled = SubResource("StyleBoxFlat_0fely")
+metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
