@@ -1,13 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://sw1k5bbvol3i"]
+[gd_scene load_steps=2 format=3 uid="uid://sw1k5bbvol3i"]
 
-[ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/StyleBoxMobileButton.cs" id="2_0fely"]
-[ext_resource type="Script" uid="uid://b2vl0pocyunxe" path="res://addons/MobileControls/TextureMobileButton.cs" id="2_adjj0"]
-[ext_resource type="Script" uid="uid://b43einp16x7pp" path="res://addons/MobileControls/SafeAreaContainer.cs" id="3_0fely"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fely"]
-bg_color = Color(0.98916, 0.178675, 0.79947, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68jdq"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_elwnb"]
+bg_color = Color(0.932356, 0.436923, 1.92523e-07, 1)
 
 [node name="Example" type="Control"]
 layout_mode = 3
@@ -17,39 +11,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureMobileButton" type="Control" parent="."]
-anchors_preset = 0
-offset_left = 343.0
-offset_top = 118.0
-offset_right = 949.0
-offset_bottom = 466.0
-pivot_offset = Vector2(303, 174)
-script = ExtResource("2_adjj0")
-metadata/_custom_type_script = "uid://b2vl0pocyunxe"
-
-[node name="StyleBoxMobileButton" type="Control" parent="."]
-custom_minimum_size = Vector2(300, 100)
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-pivot_offset = Vector2(150, 50)
-script = ExtResource("2_0fely")
-Normal = SubResource("StyleBoxFlat_0fely")
-Disabled = SubResource("StyleBoxFlat_68jdq")
-TouchDisabled = true
-metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
-
-[node name="Button" type="Button" parent="."]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="SafeAreaContainer" type="MarginContainer" parent="."]
+[node name="Panel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("3_0fely")
-metadata/_custom_type_script = "uid://b43einp16x7pp"
+theme_override_styles/panel = SubResource("StyleBoxFlat_elwnb")

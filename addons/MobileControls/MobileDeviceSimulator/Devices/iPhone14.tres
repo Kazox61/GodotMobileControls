@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://dgtdcthmyti4s"]
+
+[ext_resource type="Texture2D" uid="uid://bpm6mew4ffs0n" path="res://addons/MobileControls/MobileDeviceSimulator/Frames/iPhone 14 - Starlight - Portrait.png" id="1_0aheb"]
+[ext_resource type="Script" uid="uid://vlbts3i0hc56" path="res://addons/MobileControls/MobileDeviceSimulator/DeviceSetup.cs" id="1_j848j"]
+
+[resource]
+script = ExtResource("1_j848j")
+DeviceName = "iPhone 14"
+DeviceSize = Vector2(1170, 2532)
+DeviceFrame = ExtResource("1_0aheb")
+DeviceFrameScale = 1.0

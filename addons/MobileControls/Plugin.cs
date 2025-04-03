@@ -1,15 +1,23 @@
 #if TOOLS
 using Godot;
-using System;
 
 [Tool]
 public partial class Plugin : EditorPlugin {
+	private Control _dock;
+	
 	public override void _EnterTree() {
-		// Initialization of the plugin goes here.
+		_dock = GD.Load<PackedScene>(GetPluginPath() + "/MobileDeviceSimulator/MobileDeviceSimulator.tscn").Instantiate<Control>();
+		AddControlToDock(DockSlot.RightBl, _dock);
 	}
 
 	public override void _ExitTree() {
-		// Clean-up of the plugin goes here.
+		RemoveControlFromDocks(_dock);
+		_dock.Free();
+	}
+
+	private string GetPluginPath() {
+		var script = (Script)GetScript();
+		return script.GetPath().GetBaseDir();
 	}
 }
 #endif

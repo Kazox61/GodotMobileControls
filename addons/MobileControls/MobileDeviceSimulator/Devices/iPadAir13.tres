@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://bxxo10ejpxcxg"]
+
+[ext_resource type="Texture2D" uid="uid://64jyo4o6puv3" path="res://addons/MobileControls/MobileDeviceSimulator/Frames/iPad Air 13_ - M2 - Space Gray - Portrait.png" id="1_clw32"]
+[ext_resource type="Script" uid="uid://vlbts3i0hc56" path="res://addons/MobileControls/MobileDeviceSimulator/DeviceSetup.cs" id="2_ve0lp"]
+
+[resource]
+script = ExtResource("2_ve0lp")
+DeviceName = "iPad Air 13"
+DeviceSize = Vector2i(2048, 2732)
+DeviceFrame = ExtResource("1_clw32")

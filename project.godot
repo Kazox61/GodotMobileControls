@@ -13,6 +13,13 @@ config_version=5
 config/name="GodotMobileControls"
 config/features=PackedStringArray("4.4", "C#", "Mobile")
 
+[display]
+
+window/size/viewport_width=1170
+window/size/viewport_height=2532
+window/size/window_width_override=540
+window/size/window_height_override=960
+
 [dotnet]
 
 project/assembly_name="GodotMobileControls"

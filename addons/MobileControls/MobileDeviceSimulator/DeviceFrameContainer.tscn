@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://fncjejx3o8ht"]
+
+[ext_resource type="Texture2D" uid="uid://bpm6mew4ffs0n" path="res://addons/MobileControls/MobileDeviceSimulator/Frames/iPhone 14 - Starlight - Portrait.png" id="1_b0jj5"]
+[ext_resource type="Script" uid="uid://cxd2blloku1d7" path="res://addons/MobileControls/MobileDeviceSimulator/DeviceFrameContainer.cs" id="1_hpsqo"]
+
+[node name="DeviceFrameContainer" type="TextureRect"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -685.0
+offset_top = -1366.0
+offset_right = 685.0
+offset_bottom = 1366.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(685, 1366)
+mouse_filter = 2
+texture = ExtResource("1_b0jj5")
+stretch_mode = 2
+script = ExtResource("1_hpsqo")

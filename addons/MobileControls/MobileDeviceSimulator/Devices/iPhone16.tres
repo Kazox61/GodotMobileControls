@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://c3g0cv8m0twkq"]
+
+[ext_resource type="Texture2D" uid="uid://dbnl7vdbi8hot" path="res://addons/MobileControls/MobileDeviceSimulator/Frames/iPhone 16 - White - Portrait.png" id="1_yer50"]
+[ext_resource type="Script" uid="uid://vlbts3i0hc56" path="res://addons/MobileControls/MobileDeviceSimulator/DeviceSetup.cs" id="2_ggcj7"]
+
+[resource]
+script = ExtResource("2_ggcj7")
+DeviceName = "iPhone 16"
+DeviceSize = Vector2(1179, 2556)
+DeviceFrame = ExtResource("1_yer50")
+DeviceFrameScale = 1.0
