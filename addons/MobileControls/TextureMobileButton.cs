@@ -20,13 +20,8 @@ public partial class TextureMobileButton : MobileButton {
 			if (_normal != null) {
 				_normal.Changed += QueueRedraw;
 			}
-
-			if (TouchDisabled) {
-				return;
-			}
 			
-			_currentTexture = _normal;
-			QueueRedraw();
+			UpdateCurrentTexture();
 		}
 	}
 	
@@ -43,6 +38,8 @@ public partial class TextureMobileButton : MobileButton {
 			if (_pressed != null) {
 				_pressed.Changed += QueueRedraw;
 			}
+			
+			UpdateCurrentTexture();
 		}
 	}
 	
@@ -59,6 +56,8 @@ public partial class TextureMobileButton : MobileButton {
 			if (_hover != null) {
 				_hover.Changed += QueueRedraw;
 			}
+			
+			UpdateCurrentTexture();
 		}
 	}
 	
@@ -76,12 +75,7 @@ public partial class TextureMobileButton : MobileButton {
 				_disabled.Changed += QueueRedraw;
 			}
 			
-			if (!TouchDisabled) {
-				return;
-			}
-			
-			_currentTexture = _disabled;
-			QueueRedraw();
+			UpdateCurrentTexture();
 		}
 	}
 
@@ -109,7 +103,15 @@ public partial class TextureMobileButton : MobileButton {
 	}
 	
 	private void OnDisabledChanged(bool disabled) {
-		_currentTexture = disabled ? Disabled : Normal;
+		UpdateCurrentTexture();
+	}
+
+	private void UpdateCurrentTexture() {
+		_currentTexture = _normal;
+		if (_disabled != null && TouchDisabled) {
+			_currentTexture = _disabled;
+		}
+		
 		QueueRedraw();
 	}
 }

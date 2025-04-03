@@ -4,16 +4,10 @@
 [ext_resource type="Script" uid="uid://b2vl0pocyunxe" path="res://addons/MobileControls/TextureMobileButton.cs" id="2_adjj0"]
 [ext_resource type="Script" uid="uid://b43einp16x7pp" path="res://addons/MobileControls/SafeAreaContainer.cs" id="3_0fely"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_adjj0"]
-bg_color = Color(0.6, 1, 0.6, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-corner_detail = 16
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fely"]
-bg_color = Color(1, 0, 0, 1)
+bg_color = Color(0.98916, 0.178675, 0.79947, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68jdq"]
 
 [node name="Example" type="Control"]
 layout_mode = 3
@@ -25,9 +19,11 @@ grow_vertical = 2
 
 [node name="TextureMobileButton" type="Control" parent="."]
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-pivot_offset = Vector2(20, 20)
+offset_left = 343.0
+offset_top = 118.0
+offset_right = 949.0
+offset_bottom = 466.0
+pivot_offset = Vector2(303, 174)
 script = ExtResource("2_adjj0")
 metadata/_custom_type_script = "uid://b2vl0pocyunxe"
 
@@ -38,8 +34,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 pivot_offset = Vector2(150, 50)
 script = ExtResource("2_0fely")
-Normal = SubResource("StyleBoxFlat_adjj0")
-Disabled = SubResource("StyleBoxFlat_0fely")
+Normal = SubResource("StyleBoxFlat_0fely")
+Disabled = SubResource("StyleBoxFlat_68jdq")
+TouchDisabled = true
 metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
 
 [node name="Button" type="Button" parent="."]
@@ -52,5 +49,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("3_0fely")
 metadata/_custom_type_script = "uid://b43einp16x7pp"

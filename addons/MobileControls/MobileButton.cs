@@ -143,7 +143,6 @@ public partial class MobileButton : Control {
 
 		if (LongPressed) {
 			EmitSignalTouchLongPressDrag(drag);
-			return;
 		}
 
 		if (_dragDistance < MinDragCancelDistance || _isCanceled) {
