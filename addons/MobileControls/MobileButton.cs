@@ -23,7 +23,19 @@ public partial class MobileButton : Control {
 		}
 	}
 
-	[Export] public bool ToggleMode;
+	private bool _toggleMode;
+
+	[Export]
+	public bool ToggleMode {
+		get => _toggleMode;
+		set {
+			var oldValue = _toggleMode;
+			_toggleMode = value;
+			if (!_toggleMode && oldValue != _toggleMode) {
+				ButtonPressed = false;
+			}
+		}
+	}
 	
 	private bool _buttonPressed;
 	[Export]
@@ -32,6 +44,7 @@ public partial class MobileButton : Control {
 		set {
 			if (!ToggleMode) {
 				_buttonPressed = false;
+				UpdateVisual();
 				return;
 			}
 			

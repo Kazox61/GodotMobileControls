@@ -111,7 +111,7 @@ public partial class StyleBoxMobileButton : MobileButton {
 		if (_disabled != null && TouchDisabled) {
 			_currentStyleBox = Disabled;
 		}
-		else if (ButtonPressed) {
+		else if (_pressed != null && ButtonPressed) {
 			_currentStyleBox = _pressed;
 		}
 		

@@ -111,7 +111,7 @@ public partial class TextureMobileButton : MobileButton {
 		if (_disabled != null && TouchDisabled) {
 			_currentTexture = _disabled;
 		}
-		else if (ButtonPressed) {
+		else if (_pressed != null && ButtonPressed) {
 			_currentTexture = _pressed;
 		}
 		

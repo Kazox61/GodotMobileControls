@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://sw1k5bbvol3i"]
+[gd_scene load_steps=3 format=3 uid="uid://sw1k5bbvol3i"]
+
+[ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/StyleBoxMobileButton.cs" id="1_od57n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_od57n"]
 
 [node name="Example" type="Control"]
 layout_mode = 3
@@ -7,3 +11,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="StyleBoxMobileButton" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 259.0
+offset_top = 447.0
+offset_right = 817.0
+offset_bottom = 804.0
+pivot_offset = Vector2(279, 178.5)
+script = ExtResource("1_od57n")
+Normal = SubResource("StyleBoxFlat_od57n")
+ToggleMode = true
+metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
