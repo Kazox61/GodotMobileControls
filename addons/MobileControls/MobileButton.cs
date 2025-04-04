@@ -23,6 +23,28 @@ public partial class MobileButton : Control {
 		}
 	}
 
+	[Export] public bool ToggleMode;
+	
+	private bool _buttonPressed;
+	[Export]
+	public bool ButtonPressed {
+		get => _buttonPressed;
+		set {
+			if (!ToggleMode) {
+				_buttonPressed = false;
+				return;
+			}
+			
+			if (value == _buttonPressed) {
+				return;
+			}
+			
+			_buttonPressed = value;
+			UpdateVisual();
+			EmitSignalToggled(_buttonPressed);
+		}
+	}
+
 	[Export] public bool LongPressEnabled;
 	[Export] public float LongPressActivationTime = 0.3f;
 
@@ -72,7 +94,10 @@ public partial class MobileButton : Control {
 	[Signal]
 	public delegate void TouchLongPressEventHandler();
 	
-	public event Action<bool> OnTouchDisabledChanged; 
+	[Signal]
+	public delegate void ToggledEventHandler(bool toggledOn);
+	
+	public event Action<bool> OnTouchDisabledChanged;
 
 	public override void _EnterTree() {
 		SetPivotDeferred();
@@ -164,6 +189,10 @@ public partial class MobileButton : Control {
 
 		if (!_isCanceled) {
 			EmitSignalTouchPress();
+			if (ToggleMode) {
+				ButtonPressed = !ButtonPressed;
+			}
+			
 			if (LongPressed) {
 				EmitSignalTouchLongPress();
 			}
@@ -245,4 +274,6 @@ public partial class MobileButton : Control {
 		_currentTween.TweenProperty(this, "scale", ButtonUpScale, Duration * 0.5f);
 		_currentTween.TweenProperty(this, "scale", Vector2.One, Duration * 0.5f);
 	}
+	
+	protected virtual void UpdateVisual() { }
 }
