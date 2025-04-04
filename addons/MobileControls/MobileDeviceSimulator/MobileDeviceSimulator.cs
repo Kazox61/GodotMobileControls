@@ -81,10 +81,38 @@ public partial class MobileDeviceSimulator : Control {
 	private void UpdateDevice(DeviceSetup deviceSetup) {
 		_activeDeviceSetup = deviceSetup;
 		
-		ViewportWidth = deviceSetup.DeviceSize.X;
-		ViewportHeight = deviceSetup.DeviceSize.Y;
+		SetViewportSize();
 		
 		_deviceFrameContainer.UpdateDevice(deviceSetup);
+	}
+	
+	private void SetViewportSize() {
+		if (_landscapeOrientation.ButtonPressed) {
+			ViewportWidth = _activeDeviceSetup.DeviceSize.Y;
+			ViewportHeight = _activeDeviceSetup.DeviceSize.X;
+			
+			ReloadCurrentScene();
+			
+			_deviceFrameContainer.RotateToLandscape();
+			return;
+		}
+
+		ViewportWidth = _activeDeviceSetup.DeviceSize.X;
+		ViewportHeight = _activeDeviceSetup.DeviceSize.Y;
+		
+		ReloadCurrentScene();
+			
+		_deviceFrameContainer.RotateToPortrait();
+	}
+
+	private void ReloadCurrentScene() {
+		if (_editingSceneRoot != null) {
+			EditorInterface.Singleton.ReloadSceneFromPath(_editingSceneRoot.GetSceneFilePath());
+		}
+		_editingSceneRoot = null;
+		_deviceFrameContainer = _deviceFrameContainerPrefab.Instantiate<DeviceFrameContainer>();
+		
+		EditingSceneRoot = EditorInterface.Singleton.GetEditedSceneRoot();
 	}
 
 	private void OnDeviceSelected(long index) {
@@ -99,20 +127,7 @@ public partial class MobileDeviceSimulator : Control {
 	}
 
 	private void OnLandscapeOrientationToggled(bool isChecked) {
-		if (_deviceFrameContainer == null) {
-			return;
-		}
-		
-		if (isChecked) {
-			ViewportWidth = _activeDeviceSetup.DeviceSize.Y;
-			ViewportHeight = _activeDeviceSetup.DeviceSize.X;
-			_deviceFrameContainer.RotateToLandscape();
-			return;
-		}
-
-		ViewportWidth = _activeDeviceSetup.DeviceSize.X;
-		ViewportHeight = _activeDeviceSetup.DeviceSize.Y;
-		_deviceFrameContainer.RotateToPortrait();
+		SetViewportSize();
 	}
 	
 	private void OnEditingSceneRootChanged() {
