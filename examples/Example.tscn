@@ -1,16 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://sw1k5bbvol3i"]
+[gd_scene load_steps=2 format=3 uid="uid://sw1k5bbvol3i"]
 
-[ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/StyleBoxMobileButton.cs" id="1_od57n"]
-[ext_resource type="Script" uid="uid://c1lvviteujphy" path="res://addons/MobileControls/MobileButtonGroup.cs" id="2_adjj0"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fely"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68jdq"]
-bg_color = Color(1, 0.2504, 0.646394, 1)
-
-[sub_resource type="Resource" id="Resource_elwnb"]
-script = ExtResource("2_adjj0")
-metadata/_custom_type_script = "uid://c1lvviteujphy"
+[ext_resource type="Script" uid="uid://dyx54mawglux2" path="res://addons/MobileControls/MobileScrollContainer/MobileScrollContainer.cs" id="1_4tyqv"]
 
 [node name="Example" type="Control"]
 layout_mode = 3
@@ -20,31 +10,141 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="StyleBoxMobileButton" type="Control" parent="."]
-anchors_preset = 0
-offset_left = 355.0
-offset_top = 141.0
-offset_right = 896.0
-offset_bottom = 544.0
-pivot_offset = Vector2(270.5, 201.5)
-script = ExtResource("1_od57n")
-Normal = SubResource("StyleBoxFlat_0fely")
-Pressed = SubResource("StyleBoxFlat_68jdq")
-ToggleMode = true
-MobileButtonGroup = SubResource("Resource_elwnb")
-metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
+[node name="MobileScrollContainer" type="Control" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4tyqv")
+metadata/_custom_type_script = "uid://dyx54mawglux2"
 
-[node name="StyleBoxMobileButton2" type="Control" parent="."]
-anchors_preset = 0
-offset_left = 372.0
-offset_top = 659.0
-offset_right = 913.0
-offset_bottom = 1062.0
-pivot_offset = Vector2(270.5, 201.5)
-script = ExtResource("1_od57n")
-Normal = SubResource("StyleBoxFlat_0fely")
-Pressed = SubResource("StyleBoxFlat_68jdq")
-ToggleMode = true
-ButtonPressed = true
-MobileButtonGroup = SubResource("Resource_elwnb")
-metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
+[node name="VBoxContainer" type="VBoxContainer" parent="MobileScrollContainer"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+theme_override_constants/separation = 0
+
+[node name="ColorRect" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect3" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect5" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect7" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect8" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect9" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect10" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect11" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect12" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect13" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect14" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect15" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect16" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect17" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect18" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect19" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect20" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ColorRect21" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect22" type="ColorRect" parent="MobileScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+mouse_filter = 1

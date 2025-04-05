@@ -7,8 +7,6 @@ namespace GodotMobileControls;
 
 [Tool, GlobalClass, Icon("res://addons/MobileControls/Icons/MobileButton.svg")]
 public partial class MobileButton : Control {
-	private const float MinDragCancelDistance = 25f;
-
 	private bool _touchDisabled;
 
 	[Export]
@@ -146,18 +144,21 @@ public partial class MobileButton : Control {
 			return;
 		}
 		
-		if (@event is InputEventScreenTouch touch) {
-			if (touch.IsPressed()) {
-				OnScreenTouchStart(touch);
-			}
+		switch (@event) {
+			case InputEventScreenTouch touch: {
+				if (touch.IsPressed()) {
+					OnScreenTouchStart(touch);
+				}
 
-			if (touch.IsReleased()) {
-				OnScreenTouchEnd(touch);
-			}
-		}
+				if (touch.IsReleased()) {
+					OnScreenTouchEnd(touch);
+				}
 
-		if (@event is InputEventScreenDrag drag) {
-			OnScreenDrag(drag);
+				break;
+			}
+			case InputEventScreenDrag drag:
+				OnScreenDrag(drag);
+				break;
 		}
 	}
 
@@ -172,7 +173,7 @@ public partial class MobileButton : Control {
 			return;
 		}
 
-		if (_touchDuration > LongPressActivationTime && _dragDistance < MinDragCancelDistance) {
+		if (_touchDuration > LongPressActivationTime && _dragDistance < GlobalSettings.MinDragCancelDistance) {
 			LongPressed = true;
 			EmitSignalTouchLongPressStart();
 		}
@@ -198,7 +199,7 @@ public partial class MobileButton : Control {
 			EmitSignalTouchLongPressDrag(drag);
 		}
 
-		if (_dragDistance < MinDragCancelDistance || _isCanceled) {
+		if (_dragDistance < GlobalSettings.MinDragCancelDistance || _isCanceled) {
 			return;
 		}
 
