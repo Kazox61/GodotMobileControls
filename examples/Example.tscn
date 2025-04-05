@@ -1,8 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://sw1k5bbvol3i"]
+[gd_scene load_steps=6 format=3 uid="uid://sw1k5bbvol3i"]
 
 [ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/StyleBoxMobileButton.cs" id="1_od57n"]
+[ext_resource type="Script" uid="uid://c1lvviteujphy" path="res://addons/MobileControls/MobileButtonGroup.cs" id="2_adjj0"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_od57n"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fely"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68jdq"]
+bg_color = Color(1, 0.2504, 0.646394, 1)
+
+[sub_resource type="Resource" id="Resource_elwnb"]
+script = ExtResource("2_adjj0")
+metadata/_custom_type_script = "uid://c1lvviteujphy"
 
 [node name="Example" type="Control"]
 layout_mode = 3
@@ -14,12 +22,29 @@ grow_vertical = 2
 
 [node name="StyleBoxMobileButton" type="Control" parent="."]
 anchors_preset = 0
-offset_left = 259.0
-offset_top = 447.0
-offset_right = 817.0
-offset_bottom = 804.0
-pivot_offset = Vector2(279, 178.5)
+offset_left = 355.0
+offset_top = 141.0
+offset_right = 896.0
+offset_bottom = 544.0
+pivot_offset = Vector2(270.5, 201.5)
 script = ExtResource("1_od57n")
-Normal = SubResource("StyleBoxFlat_od57n")
+Normal = SubResource("StyleBoxFlat_0fely")
+Pressed = SubResource("StyleBoxFlat_68jdq")
 ToggleMode = true
+MobileButtonGroup = SubResource("Resource_elwnb")
+metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
+
+[node name="StyleBoxMobileButton2" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 372.0
+offset_top = 659.0
+offset_right = 913.0
+offset_bottom = 1062.0
+pivot_offset = Vector2(270.5, 201.5)
+script = ExtResource("1_od57n")
+Normal = SubResource("StyleBoxFlat_0fely")
+Pressed = SubResource("StyleBoxFlat_68jdq")
+ToggleMode = true
+ButtonPressed = true
+MobileButtonGroup = SubResource("Resource_elwnb")
 metadata/_custom_type_script = "uid://dhb7mffjv8ywk"

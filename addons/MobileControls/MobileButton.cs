@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
@@ -44,22 +45,36 @@ public partial class MobileButton : Control {
 		set {
 			if (!ToggleMode) {
 				_buttonPressed = false;
-				UpdateVisual();
+				QueueRedraw();
 				return;
 			}
 			
 			if (value == _buttonPressed) {
 				return;
 			}
+
+			if (value && IsInstanceValid(MobileButtonGroup)) {
+				if (IsInstanceValid(MobileButtonGroup.PressedButton)) {
+					MobileButtonGroup.PressedButton.ButtonPressed = false;
+				}
+				MobileButtonGroup.PressedButton = this;
+			}
 			
 			_buttonPressed = value;
-			UpdateVisual();
+			
+			QueueRedraw();
 			EmitSignalToggled(_buttonPressed);
 		}
 	}
 
 	[Export] public bool LongPressEnabled;
 	[Export] public float LongPressActivationTime = 0.3f;
+
+	private MobileButtonGroup _mobileButtonGroup;
+	[Export] public MobileButtonGroup MobileButtonGroup {
+		get => _mobileButtonGroup;
+		set => SetMobileButtonGroup(value);
+	}
 
 	[ExportGroup("Animation")] 
 	[Export] public bool Animated = true;
@@ -288,5 +303,21 @@ public partial class MobileButton : Control {
 		_currentTween.TweenProperty(this, "scale", Vector2.One, Duration * 0.5f);
 	}
 	
-	protected virtual void UpdateVisual() { }
+	private void SetMobileButtonGroup(MobileButtonGroup mobileButtonGroup) {
+		MobileButtonGroup?.Buttons.Remove(this);
+		_mobileButtonGroup = mobileButtonGroup;
+		MobileButtonGroup?.Buttons.Add(this);
+
+		
+		if (ButtonPressed && IsInstanceValid(MobileButtonGroup)) {
+			foreach (var mobileButton in MobileButtonGroup.Buttons.Where(mobileButton => mobileButton != this)) {
+				mobileButton.ButtonPressed = false;
+				mobileButton.QueueRedraw();
+			}
+
+			MobileButtonGroup.PressedButton = this;
+		}
+		
+		QueueRedraw();
+	}
 }

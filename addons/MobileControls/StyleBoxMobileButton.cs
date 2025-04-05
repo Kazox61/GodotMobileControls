@@ -21,7 +21,7 @@ public partial class StyleBoxMobileButton : MobileButton {
 				_normal.Changed += QueueRedraw;
 			}
 
-			UpdateVisual();
+			QueueRedraw();
 		}
 	}
 	
@@ -39,7 +39,7 @@ public partial class StyleBoxMobileButton : MobileButton {
 				_pressed.Changed += QueueRedraw;
 			}
 			
-			UpdateVisual();
+			QueueRedraw();
 		}
 	}
 	
@@ -57,7 +57,7 @@ public partial class StyleBoxMobileButton : MobileButton {
 				_hover.Changed += QueueRedraw;
 			}
 			
-			UpdateVisual();
+			QueueRedraw();
 		}
 	}
 	
@@ -75,7 +75,7 @@ public partial class StyleBoxMobileButton : MobileButton {
 				_disabled.Changed += QueueRedraw;
 			}
 			
-			UpdateVisual();
+			QueueRedraw();
 		}
 	}
 
@@ -94,6 +94,14 @@ public partial class StyleBoxMobileButton : MobileButton {
 	}
 
 	public override void _Draw() {
+		_currentStyleBox = Normal;
+		if (_disabled != null && TouchDisabled) {
+			_currentStyleBox = Disabled;
+		}
+		else if (_pressed != null && ButtonPressed) {
+			_currentStyleBox = _pressed;
+		}
+		
 		if (_currentStyleBox == null) {
 			return;
 		}
@@ -103,18 +111,6 @@ public partial class StyleBoxMobileButton : MobileButton {
 	}
 	
 	private void OnDisabledChanged(bool disabled) {
-		UpdateVisual();
-	}
-	
-	protected override void UpdateVisual() {
-		_currentStyleBox = Normal;
-		if (_disabled != null && TouchDisabled) {
-			_currentStyleBox = Disabled;
-		}
-		else if (_pressed != null && ButtonPressed) {
-			_currentStyleBox = _pressed;
-		}
-		
 		QueueRedraw();
 	}
 }
