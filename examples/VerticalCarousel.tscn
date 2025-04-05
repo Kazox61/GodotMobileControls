@@ -1,0 +1,137 @@
+[gd_scene load_steps=6 format=3 uid="uid://cacsk5w48tyqm"]
+
+[ext_resource type="Script" uid="uid://v2omol7opjci" path="res://addons/MobileControls/Carousel/Carousel.cs" id="1_vqihn"]
+[ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/MobileButton/StyleBoxMobileButton.cs" id="2_tgml1"]
+[ext_resource type="Script" uid="uid://bihclumosmseb" path="res://addons/MobileControls/MobileScrollContainer/MobileItemScrollContainer.cs" id="3_srfm5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ihgnj"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.384314, 0.384314, 0.384314, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+corner_detail = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6sos"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.383976, 0.383976, 0.383976, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+corner_detail = 16
+
+[node name="Carousel" type="VBoxContainer"]
+offset_right = 180.0
+offset_bottom = 360.0
+theme_override_constants/separation = 32
+script = ExtResource("1_vqihn")
+Gap = 18
+
+[node name="Previous" type="Control" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("2_tgml1")
+Normal = SubResource("StyleBoxFlat_ihgnj")
+metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
+
+[node name="Content" type="Control" parent="." node_paths=PackedStringArray("ItemsContainer")]
+clip_contents = true
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_srfm5")
+ItemsContainer = NodePath("ItemsContainer")
+Direction = 1
+metadata/_custom_type_script = "uid://bihclumosmseb"
+
+[node name="ItemsContainer" type="VBoxContainer" parent="Content"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 1072.0
+grow_horizontal = 2
+theme_override_constants/separation = 18
+
+[node name="Panel" type="PanelContainer" parent="Content/ItemsContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="Content/ItemsContainer/Panel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel2" type="PanelContainer" parent="Content/ItemsContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="Content/ItemsContainer/Panel2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel3" type="PanelContainer" parent="Content/ItemsContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="Content/ItemsContainer/Panel3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel4" type="PanelContainer" parent="Content/ItemsContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="Content/ItemsContainer/Panel4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel5" type="PanelContainer" parent="Content/ItemsContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="Content/ItemsContainer/Panel5"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Next" type="Control" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("2_tgml1")
+Normal = SubResource("StyleBoxFlat_ihgnj")
+metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
+
+[connection signal="TouchPress" from="Previous" to="Content" method="ScrollToPreviousItem"]
+[connection signal="TouchPress" from="Next" to="Content" method="ScrollToNextItem"]
