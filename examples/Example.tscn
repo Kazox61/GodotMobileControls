@@ -47,7 +47,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Content" parent="Carousel" index="1"]
-custom_minimum_size = Vector2(576, 200)
+custom_minimum_size = Vector2(0, 0)
 VisibleItemsCount = 3
 
 [node name="Panel6" type="PanelContainer" parent="Carousel/Content/ItemsContainer" index="5"]
