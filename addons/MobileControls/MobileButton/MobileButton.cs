@@ -278,9 +278,9 @@ public partial class MobileButton : Control {
 
 		_taskCompletionSource = new TaskCompletionSource<bool>();
 
-		_currentTween = CreateTween();
-		_currentTween.SetTrans(Tween.TransitionType.Sine);
-		_currentTween.SetEase(Tween.EaseType.InOut);
+		_currentTween = CreateTween()
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.InOut);
 
 		_currentTween.TweenProperty(this, "scale", ButtonDownScale, Duration);
 
@@ -296,9 +296,9 @@ public partial class MobileButton : Control {
 	private void PlayGrowAnimation() {
 		_currentTween?.Kill();
 
-		_currentTween = CreateTween();
-		_currentTween.SetTrans(Tween.TransitionType.Sine);
-		_currentTween.SetEase(Tween.EaseType.InOut);
+		_currentTween = CreateTween()
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.InOut);
 
 		_currentTween.TweenProperty(this, "scale", ButtonUpScale, Duration * 0.5f);
 		_currentTween.TweenProperty(this, "scale", Vector2.One, Duration * 0.5f);
