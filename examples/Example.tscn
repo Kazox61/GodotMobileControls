@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://sw1k5bbvol3i"]
+[gd_scene load_steps=5 format=3 uid="uid://sw1k5bbvol3i"]
 
-[ext_resource type="PackedScene" uid="uid://eykcy8ne1u8d" path="res://Examples/HorizontalCarousel.tscn" id="1_4tyqv"]
+[ext_resource type="Script" uid="uid://bwhytef3gy55" path="res://addons/MobileControls/GridContainer/AnimatedGridContainer.cs" id="1_4tyqv"]
+[ext_resource type="Script" uid="uid://brvewtpywnv00" path="res://Examples/Example.cs" id="1_br4wk"]
+[ext_resource type="Script" uid="uid://dhb7mffjv8ywk" path="res://addons/MobileControls/MobileButton/StyleBoxMobileButton.cs" id="2_2vv02"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6sos"]
 draw_center = false
@@ -15,13 +17,16 @@ corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
 corner_detail = 16
 
-[node name="Example" type="Control"]
+[node name="Example" type="Control" node_paths=PackedStringArray("_animatedGridContainer", "_styleBoxMobileButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_br4wk")
+_animatedGridContainer = NodePath("AnimatedGridContainer")
+_styleBoxMobileButton = NodePath("StyleBoxMobileButton")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -32,34 +37,144 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Carousel" parent="." instance=ExtResource("1_4tyqv")]
+[node name="AnimatedGridContainer" type="Container" parent="."]
+custom_minimum_size = Vector2(830, 667)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -368.0
-offset_top = -100.0
-offset_right = 368.0
-offset_bottom = 100.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 200.0
+offset_bottom = 620.0
 grow_horizontal = 2
-grow_vertical = 2
+script = ExtResource("1_4tyqv")
+Columns = 3
+HSeparation = 20
+VSeparation = 20
+UseFirstRowElementWidth = true
+metadata/_custom_type_script = "uid://bwhytef3gy55"
 
-[node name="Content" parent="Carousel" index="1"]
-custom_minimum_size = Vector2(0, 0)
-VisibleItemsCount = 3
-
-[node name="Panel6" type="PanelContainer" parent="Carousel/Content/ItemsContainer" index="5"]
+[node name="Panel1" type="PanelContainer" parent="AnimatedGridContainer"]
 custom_minimum_size = Vector2(180, 200)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
 
-[node name="Label" type="Label" parent="Carousel/Content/ItemsContainer/Panel6"]
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel2" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel3" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel4" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel4"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel5" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel5"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 80
 text = "5"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[editable path="Carousel"]
+[node name="Panel6" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel6"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "6"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel7" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel7"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "7"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel8" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel8"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "8"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel9" type="PanelContainer" parent="AnimatedGridContainer"]
+custom_minimum_size = Vector2(180, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q6sos")
+
+[node name="Label" type="Label" parent="AnimatedGridContainer/Panel9"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "9"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StyleBoxMobileButton" type="Control" parent="."]
+custom_minimum_size = Vector2(500, 140)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -320.0
+offset_right = 250.0
+offset_bottom = -200.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(250, 70)
+script = ExtResource("2_2vv02")
+Normal = SubResource("StyleBoxFlat_q6sos")
+metadata/_custom_type_script = "uid://dhb7mffjv8ywk"
