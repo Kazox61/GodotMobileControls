@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System.Threading.Tasks;
+using Godot;
 
 namespace GodotMobileControls;
 
@@ -38,7 +39,7 @@ public partial class MobileItemScrollContainer : MobileScrollContainer {
 	private Control LastVisibleItem => ItemsContainer.GetChild<Control>(LastVisibleItemIndex);
 
 
-	public void ScrollToItem(int direction) {
+	public async Task ScrollToItem(int direction) {
 		var itemsCount = ItemsContainer.GetChildCount();
 
 		var nextChildIndex = FirstVisibleItemIndex + direction;
@@ -48,15 +49,15 @@ public partial class MobileItemScrollContainer : MobileScrollContainer {
 		}
 		
 		FirstVisibleItemIndex = nextChildIndex;
-		ScrollToPosition(FirstVisibleItem.Position * -1, 0.5f);
+		await ScrollToPosition(FirstVisibleItem.Position * -1, 0.5f);
 	}
 	
-	public void ScrollToPreviousItem() {
-		ScrollToItem(-1);
+	public async Task ScrollToPreviousItem() {
+		await ScrollToItem(-1);
 	}
 	
-	public void ScrollToNextItem() {
-		ScrollToItem(1);
+	public async Task ScrollToNextItem() {
+		await ScrollToItem(1);
 	}
 
 	private void UpdateCustomMinimumSize() {

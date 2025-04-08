@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System.Threading.Tasks;
+using Godot;
 using GodotMobileControls.Extensions;
 
 namespace GodotMobileControls;
@@ -25,7 +26,7 @@ public partial class MobileScrollContainer : Control {
 		ScrollView = GetChild<Control>(0);
 	}
 	
-	public async void ScrollToTop(float duration = 1f) {
+	public async Task ScrollToTop(float duration = 1f) {
 		var tween = CreateTween();
 
 		tween.SetEase(Tween.EaseType.InOut);
@@ -36,7 +37,7 @@ public partial class MobileScrollContainer : Control {
 		await tween.PlayAsync();
 	}
 	
-	public async void ScrollToPosition(Vector2 position, float duration = 1f) {
+	public async Task ScrollToPosition(Vector2 position, float duration = 1f) {
 		var tween = CreateTween();
 
 		tween.SetEase(Tween.EaseType.InOut);

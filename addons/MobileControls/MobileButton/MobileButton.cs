@@ -283,8 +283,10 @@ public partial class MobileButton : Control {
 			.SetEase(Tween.EaseType.InOut);
 
 		_currentTween.TweenProperty(this, "scale", ButtonDownScale, Duration);
+		_currentTween.Play();
 
 		var pressed = await _taskCompletionSource.Task;
+		_currentTween?.Kill();
 		if (!pressed) {
 			Scale = Vector2.One;
 			return;
@@ -302,6 +304,7 @@ public partial class MobileButton : Control {
 
 		_currentTween.TweenProperty(this, "scale", ButtonUpScale, Duration * 0.5f);
 		_currentTween.TweenProperty(this, "scale", Vector2.One, Duration * 0.5f);
+		_currentTween.Play();
 	}
 	
 	private void SetMobileButtonGroup(MobileButtonGroup mobileButtonGroup) {
