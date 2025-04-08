@@ -139,7 +139,6 @@ public partial class AnimatedGridContainer : Container {
 
 			var position = new Vector2(startX, rowStartY);
 			if (!_animateChildOrderDisabled && !AnimateChildOrderDisabled && !Engine.IsEditorHint()) {
-				GD.Print("Animate");
 				var task = AnimatePositionChange(child, position);
 				tasks.Add(task);
 			}
