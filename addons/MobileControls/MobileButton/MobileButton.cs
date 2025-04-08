@@ -217,10 +217,10 @@ public partial class MobileButton : Control {
 		_taskCompletionSource?.TrySetResult(!_isCanceled);
 
 		if (!_isCanceled) {
-			EmitSignalTouchPress();
 			if (ToggleMode) {
 				ButtonPressed = !ButtonPressed;
 			}
+			EmitSignalTouchPress();
 			
 			if (LongPressed) {
 				EmitSignalTouchLongPress();
