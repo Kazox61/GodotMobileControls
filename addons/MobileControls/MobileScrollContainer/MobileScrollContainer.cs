@@ -19,7 +19,8 @@ public partial class MobileScrollContainer : Control {
 	protected Control ScrollView;
 	
 	private bool _scrollStarted;
-	private float _dragDistance;
+	private bool _minDragDistanceReached;
+	private Vector2 _dragDistance;
 	private Vector2 _dragVelocity;
 
 	public override void _Ready() {
@@ -142,19 +143,34 @@ public partial class MobileScrollContainer : Control {
 	
 	private void OnScreenTouchStart(InputEventScreenTouch touch) {
 		_scrollStarted = false;
-		_dragDistance = 0f;
+		_minDragDistanceReached = false;
+		_dragDistance = Vector2.Zero;
 	}
 	
 	private void OnScreenDrag(InputEventScreenDrag drag) {
-		_dragDistance += drag.Relative.Length();
+		_dragDistance += drag.Relative;
 
-		if (_dragDistance < GlobalSettings.MinDragCancelDistance) {
-			return;
+		if (_dragDistance.Length() >= GlobalSettings.MinDragCancelDistance && !_minDragDistanceReached) {
+			_minDragDistanceReached = true;
+			switch (Direction) {
+				case DirectionEnum.Horizontal:
+					if (Mathf.Abs(_dragDistance.Y) > Mathf.Abs(_dragDistance.X)) {
+						return;
+					}
+					break;
+				case DirectionEnum.Vertical:
+					if (Mathf.Abs(_dragDistance.X) > Mathf.Abs(_dragDistance.Y)) {
+						return;
+					}
+					break;
+			}
+			
+			_scrollStarted = true;
+			EmitSignalScrollStart();
 		}
 		
 		if (!_scrollStarted) {
-			_scrollStarted = true;
-			EmitSignalScrollStart();
+			return;
 		}
 		
 		_dragVelocity = drag.Velocity;
