@@ -126,6 +126,8 @@ public partial class MobileButton : Control {
 	public event Action<bool> OnTouchDisabledChanged;
 
 	public override void _EnterTree() {
+		FocusMode = FocusModeEnum.All;
+		
 		SetPivotDeferred();
 
 		Resized += SetPivotDeferred;
