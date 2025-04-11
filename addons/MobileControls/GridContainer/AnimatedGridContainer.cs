@@ -14,7 +14,7 @@ public partial class AnimatedGridContainer : Container {
 		get => _columns;
 		set {
 			_columns = value;
-			PositionChildren();
+			Update();
 		}
 	}
 
@@ -23,7 +23,7 @@ public partial class AnimatedGridContainer : Container {
 		get => _hSeparation;
 		set {
 			_hSeparation = value;
-			PositionChildren();
+			Update();
 		}
 	}
 
@@ -32,7 +32,7 @@ public partial class AnimatedGridContainer : Container {
 		get => _vSeparation;
 		set {
 			_vSeparation = value;
-			PositionChildren();
+			Update();
 		}
 	}
 
@@ -46,9 +46,34 @@ public partial class AnimatedGridContainer : Container {
 		get => _orderDirection;
 		set {
 			_orderDirection = value;
-			PositionChildren();
+			Update();
 		}
 	}
+	
+	public enum AlignmentEnum {
+		Start,
+		Center,
+		End
+	}
+	private AlignmentEnum _horizontalAlignment = AlignmentEnum.Center;
+	[Export] public AlignmentEnum HorizontalAlignment {
+		get => _horizontalAlignment;
+		set {
+			_horizontalAlignment = value;
+			Update();
+		}
+	}
+	private AlignmentEnum _verticalAlignment = AlignmentEnum.Center;
+	[Export] public AlignmentEnum VerticalAlignment {
+		get => _verticalAlignment;
+		set {
+			_verticalAlignment = value;
+			Update();
+		}
+	}
+
+	private bool _animateChildOrderDisabled = true;
+	[Export] public bool AnimateChildOrderDisabled;
 
 	/*
 	 * If true, the width of the first row element will be used as width of the missing row elements.
@@ -58,21 +83,46 @@ public partial class AnimatedGridContainer : Container {
 		get => _useFirstRowElementWidth;
 		set {
 			_useFirstRowElementWidth = value;
-			PositionChildren();
+			Update();
 		}
 	}
+	
+	private Vector2 ContainerSize {
+		get {
+			var rows = Mathf.CeilToInt(GetChildren().Count / (float)Columns);
+		
+			var height = 0f;
+			var largestWidth = 0f;
 
-	private bool _animateChildOrderDisabled = true;
-	[Export] public bool AnimateChildOrderDisabled;
+			for (var rowIndex = 0; rowIndex < rows; rowIndex++) {
+				if (rowIndex != 0) {
+					height += VSeparation;
+				}
+			
+				var rowStartIndex = rowIndex * Columns;
+			
+				var width = GetRowWidth(rowStartIndex);
+				if (width > largestWidth) {
+					largestWidth = width;
+				}
+			
+				height += GetMaxHeightRow(rowStartIndex);
+			}
+		
+			return new Vector2(largestWidth, height);
+		}
+	}
 
 	public bool UpdateChildOrderDisabled;
 
 	private CancellationTokenSource _animationCancellation = new();
 	
+	private Vector2 _minimumSize;
+	
 	public event Action OnChildOrderChanged;
 
 	public override void _Ready() {
-		PositionChildren();
+		Update();
 		_animateChildOrderDisabled = false;
 	}
 
@@ -90,52 +140,60 @@ public partial class AnimatedGridContainer : Container {
 		_animationCancellation?.Cancel();
 		_animationCancellation = new CancellationTokenSource();
 
-		PositionChildren();
+		Update();
+	}
+	
+	public void SwapChildren(Control child1, Control child2) {
+		var index1 = child1.GetIndex();
+		var index2 = child2.GetIndex();
+			
+		UpdateChildOrderDisabled = true;
+
+		MoveChild(child1, index2);
+		MoveChild(child2, index1);
+			
+		UpdateChildOrderDisabled = false;
+		Update();
 	}
 
-	public void PositionChildren() {
+	public void Update() {
+		_minimumSize = ContainerSize;
+		CustomMinimumSize = _minimumSize;
+		
 		var rows = Mathf.CeilToInt(GetChildren().Count / (float)Columns);
-
-		var rowStartY = 0f;
-		var maxWidth = 0f;
-
+		var startY = GetStartY(_minimumSize.Y, Size.Y);
+		
 		for (var i = 0; i < rows; i++) {
 			if (i != 0) {
-				rowStartY += VSeparation;
+				startY += VSeparation;
 			}
 
 			var rowStartIndex = i * Columns;
 
-			var width = HandleRow(rowStartIndex, rowStartY);
-
-			if (width > maxWidth) {
-				maxWidth = width;
-			}
+			UpdateRow(rowStartIndex, startY, Size.X);
 
 			var maxHeight = GetMaxHeightRow(rowStartIndex);
 
-			rowStartY += maxHeight;
+			startY += maxHeight;
 		}
-
-		CustomMinimumSize = new Vector2(maxWidth, rowStartY);
 	}
 
-	private float HandleRow(int rowStartIndex, float rowStartY) {
+	private void UpdateRow(int rowStartIndex, float rowStartY, float sizeX) {
 		var tasks = new List<Task>();
 
 		var rowWidth = GetRowWidth(rowStartIndex);
-		var startX = GetStartX(rowWidth);
+		var startX = GetRowStartX(rowWidth, sizeX);
 
-		for (var i = rowStartIndex; i < rowStartIndex + Columns; i++) {
-			if (i >= GetChildren().Count) {
-				return startX;
+		for (var childIndex = rowStartIndex; childIndex < rowStartIndex + Columns; childIndex++) {
+			if (childIndex >= GetChildren().Count) {
+				return;
 			}
 
-			if (i != rowStartIndex) {
+			if (childIndex != rowStartIndex) {
 				startX += HSeparation;
 			}
 
-			var child = GetChild(i);
+			var child = GetChild(childIndex);
 
 			var position = new Vector2(startX, rowStartY);
 			if (!_animateChildOrderDisabled && !AnimateChildOrderDisabled && !Engine.IsEditorHint()) {
@@ -150,7 +208,6 @@ public partial class AnimatedGridContainer : Container {
 		}
 
 		_ = Task.WhenAll(tasks);
-		return startX;
 	}
 
 	private float GetMaxHeightRow(int rowStartIndex) {
@@ -175,8 +232,10 @@ public partial class AnimatedGridContainer : Container {
 		var rowWidth = 0f;
 		var firstElementWidth = 0f;
 
+		var childrenCount = GetChildren().Count;
+		
 		for (var i = rowStartIndex; i < rowStartIndex + Columns; i++) {
-			if (i >= GetChildren().Count) {
+			if (i >= childrenCount) {
 				if (UseFirstRowElementWidth && firstElementWidth > 0) {
 					rowWidth += firstElementWidth + HSeparation;
 				}
@@ -198,9 +257,22 @@ public partial class AnimatedGridContainer : Container {
 		return rowWidth;
 	}
 
-	private float GetStartX(float rowWidth) {
-		var availableWidth = Size.X;
-		return (availableWidth - rowWidth) / 2;
+	private float GetRowStartX(float rowWidth, float sizeX) {
+		return HorizontalAlignment switch {
+			AlignmentEnum.Start => 0,
+			AlignmentEnum.Center => (sizeX - rowWidth) / 2,
+			AlignmentEnum.End => sizeX - rowWidth,
+			_ => 0
+		};
+	}
+	
+	private float GetStartY(float containerSizeY, float customMinimumSizeY) {
+		return VerticalAlignment switch {
+			AlignmentEnum.Start => 0,
+			AlignmentEnum.Center => (customMinimumSizeY - containerSizeY) / 2,
+			AlignmentEnum.End => customMinimumSizeY - containerSizeY,
+			_ => 0
+		};
 	}
 
 	private List<Control> GetChildren() {
@@ -235,5 +307,9 @@ public partial class AnimatedGridContainer : Container {
 		tween.TweenProperty(child, "position", newPosition, 0.4f);
 
 		return tween.PlayAsync(_animationCancellation.Token);
+	}
+
+	public override Vector2 _GetMinimumSize() {
+		return _minimumSize;
 	}
 }
