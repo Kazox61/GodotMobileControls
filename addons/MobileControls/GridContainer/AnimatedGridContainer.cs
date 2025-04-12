@@ -89,7 +89,7 @@ public partial class AnimatedGridContainer : Container {
 	
 	private Vector2 ContainerSize {
 		get {
-			var rows = Mathf.CeilToInt(GetChildren().Count / (float)Columns);
+			var rows = Mathf.CeilToInt(GetVisibleChildrenCount() / (float)Columns);
 		
 			var height = 0f;
 			var largestWidth = 0f;
@@ -160,7 +160,7 @@ public partial class AnimatedGridContainer : Container {
 		_minimumSize = ContainerSize;
 		CustomMinimumSize = _minimumSize;
 		
-		var rows = Mathf.CeilToInt(GetChildren().Count / (float)Columns);
+		var rows = Mathf.CeilToInt(GetVisibleChildren().Count / (float)Columns);
 		var startY = GetStartY(_minimumSize.Y, Size.Y);
 		
 		for (var i = 0; i < rows; i++) {
@@ -183,9 +183,11 @@ public partial class AnimatedGridContainer : Container {
 
 		var rowWidth = GetRowWidth(rowStartIndex);
 		var startX = GetRowStartX(rowWidth, sizeX);
+		
+		var visibleChildrenCount = GetVisibleChildrenCount();
 
 		for (var childIndex = rowStartIndex; childIndex < rowStartIndex + Columns; childIndex++) {
-			if (childIndex >= GetChildren().Count) {
+			if (childIndex >= visibleChildrenCount) {
 				return;
 			}
 
@@ -193,7 +195,7 @@ public partial class AnimatedGridContainer : Container {
 				startX += HSeparation;
 			}
 
-			var child = GetChild(childIndex);
+			var child = GetVisibleChild(childIndex);
 
 			var position = new Vector2(startX, rowStartY);
 			if (!_animateChildOrderDisabled && !AnimateChildOrderDisabled && !Engine.IsEditorHint()) {
@@ -213,12 +215,13 @@ public partial class AnimatedGridContainer : Container {
 	private float GetMaxHeightRow(int rowStartIndex) {
 		var maxHeight = 0f;
 
+		var visibleChildrenCount = GetVisibleChildrenCount();
 		for (var i = rowStartIndex; i < rowStartIndex + Columns; i++) {
-			if (i >= GetChildren().Count) {
+			if (i >= visibleChildrenCount) {
 				return maxHeight;
 			}
 
-			var child = GetChild(i);
+			var child = GetVisibleChild(i);
 
 			if (child.Size.Y > maxHeight) {
 				maxHeight = child.Size.Y;
@@ -232,7 +235,7 @@ public partial class AnimatedGridContainer : Container {
 		var rowWidth = 0f;
 		var firstElementWidth = 0f;
 
-		var childrenCount = GetChildren().Count;
+		var childrenCount = GetVisibleChildrenCount();
 		
 		for (var i = rowStartIndex; i < rowStartIndex + Columns; i++) {
 			if (i >= childrenCount) {
@@ -242,7 +245,7 @@ public partial class AnimatedGridContainer : Container {
 				continue;
 			}
 
-			var child = GetChild(i);
+			var child = GetVisibleChild(i);
 			if (i == rowStartIndex) {
 				firstElementWidth = child.Size.X;
 			}
@@ -275,7 +278,7 @@ public partial class AnimatedGridContainer : Container {
 		};
 	}
 
-	private List<Control> GetChildren() {
+	public List<Control> GetVisibleChildren() {
 		var children = new List<Control>();
 		for (var i = 0; i < GetChildCount(); i++) {
 			var child = GetChild<Control>(i);
@@ -287,17 +290,38 @@ public partial class AnimatedGridContainer : Container {
 
 		return children;
 	}
+	
+	protected int GetVisibleChildrenCount() {
+		var count = 0;
+		for (var i = 0; i < GetChildCount(); i++) {
+			var child = GetChild<Control>(i);
+			
+			if (child.IsVisibleInTree()) {
+				count++;
+			}
+		}
 
-	private Control GetChild(int index) {
-		var children = GetChildren();
+		return count;
+	}
+
+	protected int ConvertIndex(int index) {
+		return OrderDirection switch {
+			OrderDirectionEnum.Begin => index,
+			OrderDirectionEnum.End => GetVisibleChildrenCount() - 1 - index,
+			_ => index
+		};
+	}
+
+	protected Control GetVisibleChild(int index) {
+		var children = GetVisibleChildren();
 
 		return OrderDirection switch {
 			OrderDirectionEnum.Begin => children[index],
 			OrderDirectionEnum.End => children[children.Count - 1 - index],
-			_ => throw new ArgumentOutOfRangeException()
+			_ => children[index]
 		};
 	}
-
+	
 	private Task AnimatePositionChange(Control child, Vector2 newPosition) {
 		var tween = child
 			.CreateTween()
