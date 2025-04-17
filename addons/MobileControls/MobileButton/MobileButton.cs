@@ -100,6 +100,8 @@ public partial class MobileButton : Control {
 	private TaskCompletionSource<bool> _taskCompletionSource;
 	private Tween _currentTween;
 	
+	public bool IsPressing => _isPressing;
+	
 	[Signal]
 	public delegate void TouchDownEventHandler();
 	[Signal]

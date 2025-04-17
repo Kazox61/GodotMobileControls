@@ -35,8 +35,8 @@ public partial class MobileItemScrollContainer : MobileScrollContainer {
 	
 	private int LastVisibleItemIndex => FirstVisibleItemIndex + VisibleItemsCount - 1;
 
-	private Control FirstVisibleItem => ItemsContainer.GetChild<Control>(FirstVisibleItemIndex);
-	private Control LastVisibleItem => ItemsContainer.GetChild<Control>(LastVisibleItemIndex);
+	private Control FirstVisibleItem => ItemsContainer.GetChildOrNull<Control>(FirstVisibleItemIndex);
+	private Control LastVisibleItem => ItemsContainer.GetChildOrNull<Control>(LastVisibleItemIndex);
 
 
 	public async Task ScrollToItem(int direction) {
@@ -52,15 +52,27 @@ public partial class MobileItemScrollContainer : MobileScrollContainer {
 		await ScrollToPosition(FirstVisibleItem.Position * -1, 0.5f);
 	}
 	
-	public async Task ScrollToPreviousItem() {
+	public void ScrollToPreviousItem() {
+		_ = ScrollToItem(-1);
+	}
+	
+	public async Task ScrollToPreviousItemAsync() {
 		await ScrollToItem(-1);
 	}
 	
-	public async Task ScrollToNextItem() {
+	public void ScrollToNextItem() {
+		_ = ScrollToItem(1);
+	}
+	
+	public async Task ScrollToNextItemAsync() {
 		await ScrollToItem(1);
 	}
 
 	private void UpdateCustomMinimumSize() {
+		if (FirstVisibleItem == null || LastVisibleItem == null) {
+			return;
+		}
+		
 		CustomMinimumSize = LastVisibleItem.Position + LastVisibleItem.Size - FirstVisibleItem.Position;
 		Callable.From(() => Size = CustomMinimumSize).CallDeferred();
 	}
