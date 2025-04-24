@@ -2,6 +2,7 @@
 
 namespace GodotMobileControls.MobileJoystick;
 
+[Tool, GlobalClass, Icon("res://addons/MobileControls/Icons/MobileJoystick.svg")]
 public partial class MobileJoystick : Control {
 	public enum EJoystickMode {
 		Fixed,
@@ -17,11 +18,15 @@ public partial class MobileJoystick : Control {
 
 	[Export] public Color PressedColor = Colors.White;
 
-	[Export(PropertyHint.Range, "0, 200, 1")]
-	public float DeadZoneSize = 10f;
+	[Export(PropertyHint.Range, "0, 1, 0.01")]
+	public float DeadZone = 0.2f;
 
-	[Export(PropertyHint.Range, "0, 500, 1")]
-	public float ClampZoneSize = 90f;
+	public float DeadZoneSize => DeadZone * ClampZoneSize;
+
+	[Export(PropertyHint.Range, "0, 1, 0.01")]
+	public float ClampZone = 0.9f;
+	
+	public float ClampZoneSize => ClampZone * GetBaseRadius().X;
 
 	[Export] public EJoystickMode JoystickMode = EJoystickMode.Fixed;
 	[Export] public EVisibilityMode VisibilityMode = EVisibilityMode.Always;
@@ -32,8 +37,14 @@ public partial class MobileJoystick : Control {
 	[Export] public string ActionUp = "ui_up";
 	[Export] public string ActionDown = "ui_down";
 
+	[Export] public bool Debug = true;
+
+	[ExportToolButton("Refresh Debug")]
+	private Callable RefreshDebug => Callable.From(QueueRedraw);
+
 	public bool IsPressed;
 	public Vector2 InputDirection = Vector2.Zero;
+	public bool IsFlickCanceled;
 
 	private int _touchIndex = -1;
 	private TextureRect _base;
@@ -41,8 +52,26 @@ public partial class MobileJoystick : Control {
 	private Vector2 _baseDefaultPosition;
 	private Vector2 _tipDefaultPosition;
 	private Color _defaultColor;
+	
+	[Signal]
+	public delegate void ReleasedEventHandler(Vector2 inputDirection);
+
+	[Signal]
+	public delegate void TappedEventHandler();
+	
+	[Signal]
+	public delegate void FlickedEventHandler(Vector2 inputDirection);
+	
+	[Signal]
+	public delegate void FlickCanceledEventHandler();
 
 	public override void _Ready() {
+#if TOOLS
+		if (Engine.IsEditorHint()) {
+			return;
+		}
+#endif
+		
 		_base = GetNode<TextureRect>("Base");
 		_tip = GetNode<TextureRect>("Base/Tip");
 
@@ -64,6 +93,12 @@ public partial class MobileJoystick : Control {
 	}
 
 	public override void _Input(InputEvent @event) {
+#if TOOLS
+		if (Engine.IsEditorHint()) {
+			return;
+		}
+#endif
+		
 		switch (@event) {
 			case InputEventScreenTouch eventTouch when eventTouch.Pressed: {
 				if (IsPointInsideJoystickArea(eventTouch.Position) && _touchIndex == -1) {
@@ -91,6 +126,15 @@ public partial class MobileJoystick : Control {
 			}
 			case InputEventScreenTouch eventTouch: {
 				if (eventTouch.Index == _touchIndex) {
+					EmitSignalReleased(InputDirection);
+					
+					if (!IsPressed && !IsFlickCanceled) {
+						EmitSignalTapped();
+					}
+					else if (IsPressed) {
+						EmitSignalFlicked(InputDirection);
+					}
+					
 					ResetJoystick();
 					
 					if (VisibilityMode == EVisibilityMode.WhenTouched) {
@@ -110,6 +154,22 @@ public partial class MobileJoystick : Control {
 		}
 	}
 
+	public override void _Draw() {
+		if (!Debug) {
+			return;
+		}
+		
+		var rectBase = _base?.GetRect() ?? GetNode<TextureRect>("Base").GetRect();
+		var centerBase = rectBase.GetCenter();
+		var centerTip = rectBase.Position 
+		                + (_tip?.GetRect().GetCenter() ?? GetNode<TextureRect>("Base/Tip").GetRect().GetCenter());
+		
+		DrawCircle(centerBase, DeadZoneSize, new Color("19FF19"), false, 1f, true);
+		DrawCircle(centerBase, ClampZoneSize, new Color("1919FF"), false, 2f, true);
+		
+		DrawCircle(centerTip, 4f, new Color("#FF1919"));
+	}
+	
 	private void MoveBase(Vector2 newPosition) {
 		_base.GlobalPosition = newPosition - (_base.PivotOffset * GetGlobalTransformWithCanvas().Scale);
 	}
@@ -128,7 +188,9 @@ public partial class MobileJoystick : Control {
 	}
 
 	private Vector2 GetBaseRadius() {
-		return _base.Size * _base.GetGlobalTransformWithCanvas().Scale / 2;
+		var b = _base ?? GetNode<TextureRect>("Base");
+		
+		return b.Size * b.GetGlobalTransformWithCanvas().Scale / 2;
 	}
 
 	private bool IsPointInsideBase(Vector2 point) {
@@ -149,18 +211,31 @@ public partial class MobileJoystick : Control {
 
 		MoveTip(center + vector);
 
+		var wasPressed = IsPressed;
+		
 		if (vector.LengthSquared() > DeadZoneSize * DeadZoneSize) {
 			IsPressed = true;
-			InputDirection = (vector - (vector.Normalized() * DeadZoneSize)) / (ClampZoneSize - DeadZoneSize);
+			InputDirection = vector / ClampZoneSize;
 		}
 		else {
 			IsPressed = false;
 			InputDirection = Vector2.Zero;
 		}
+		
+		if (!IsFlickCanceled && wasPressed && !IsPressed) {
+			IsFlickCanceled = true;
+			EmitSignalFlickCanceled();
+		}
+		
+		if (IsFlickCanceled && !wasPressed && IsPressed) {
+			IsFlickCanceled = false;
+		}
 
 		if (UseInputActions) {
 			HandleInputActions();
 		}
+		
+		QueueRedraw();
 	}
 
 	private void HandleInputActions() {
@@ -200,6 +275,7 @@ public partial class MobileJoystick : Control {
 	private void ResetJoystick() {
 		IsPressed = false;
 		InputDirection = Vector2.Zero;
+		IsFlickCanceled = false;
 
 		_touchIndex = -1;
 		_tip.Modulate = _defaultColor;
@@ -213,5 +289,7 @@ public partial class MobileJoystick : Control {
 		foreach (var action in new[] { ActionLeft, ActionRight, ActionUp, ActionDown }) {
 			Input.ActionRelease(action);
 		}
+		
+		QueueRedraw();
 	}
 }
