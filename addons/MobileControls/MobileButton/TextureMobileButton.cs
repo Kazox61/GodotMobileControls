@@ -81,18 +81,6 @@ public partial class TextureMobileButton : MobileButton {
 
 	private Texture2D _currentTexture;
 
-	public override void _EnterTree() {
-		base._EnterTree();
-
-		OnTouchDisabledChanged += OnDisabledChanged;
-	}
-
-	public override void _ExitTree() {
-		base._ExitTree();
-		
-		OnTouchDisabledChanged -= OnDisabledChanged;
-	}
-
 	public override void _Draw() {
 		_currentTexture = _normal;
 		if (_disabled != null && TouchDisabled) {
@@ -108,9 +96,5 @@ public partial class TextureMobileButton : MobileButton {
 		
 		var rect = new Rect2(0, 0, Size);
 		DrawTextureRect(_currentTexture, rect, false);
-	}
-	
-	private void OnDisabledChanged(bool disabled) {
-		QueueRedraw();
 	}
 }

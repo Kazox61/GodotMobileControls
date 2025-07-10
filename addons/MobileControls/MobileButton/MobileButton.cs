@@ -17,7 +17,7 @@ public partial class MobileButton : Control {
 			_touchDisabled = value;
 			
 			if (oldValue != value) {
-				OnTouchDisabledChanged?.Invoke(value);
+				QueueRedraw();
 			}
 		}
 	}
@@ -124,12 +124,8 @@ public partial class MobileButton : Control {
 	
 	[Signal]
 	public delegate void ToggledEventHandler(bool toggledOn);
-	
-	public event Action<bool> OnTouchDisabledChanged;
 
 	public override void _EnterTree() {
-		FocusMode = FocusModeEnum.All;
-		
 		SetPivotDeferred();
 
 		Resized += SetPivotDeferred;
@@ -151,17 +147,17 @@ public partial class MobileButton : Control {
 		switch (@event) {
 			case InputEventScreenTouch touch: {
 				if (touch.IsPressed()) {
-					OnScreenTouchStart(touch);
+					HandleScreenTouchStart(touch);
 				}
 
 				if (touch.IsReleased()) {
-					OnScreenTouchEnd(touch);
+					HandleScreenTouchEnd(touch);
 				}
 
 				break;
 			}
 			case InputEventScreenDrag drag:
-				OnScreenDrag(drag);
+				HandleScreenDrag(drag);
 				break;
 		}
 	}
@@ -183,7 +179,7 @@ public partial class MobileButton : Control {
 		}
 	}
 
-	private void OnScreenTouchStart(InputEventScreenTouch touch) {
+	private void HandleScreenTouchStart(InputEventScreenTouch touch) {
 		_isPressing = true;
 		_touchDuration = 0f;
 		_dragDistance = 0f;
@@ -196,7 +192,7 @@ public partial class MobileButton : Control {
 		}
 	}
 
-	private void OnScreenDrag(InputEventScreenDrag drag) {
+	private void HandleScreenDrag(InputEventScreenDrag drag) {
 		_dragDistance += drag.Relative.Length();
 
 		if (LongPressed) {
@@ -215,7 +211,7 @@ public partial class MobileButton : Control {
 		}
 	}
 
-	private void OnScreenTouchEnd(InputEventScreenTouch touch) {
+	private void HandleScreenTouchEnd(InputEventScreenTouch touch) {
 		_isPressing = false;
 
 		_taskCompletionSource?.TrySetResult(!_isCanceled);

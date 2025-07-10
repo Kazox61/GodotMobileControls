@@ -81,18 +81,6 @@ public partial class StyleBoxMobileButton : MobileButton {
 
 	private StyleBox _currentStyleBox;
 
-	public override void _EnterTree() {
-		base._EnterTree();
-
-		OnTouchDisabledChanged += OnDisabledChanged;
-	}
-
-	public override void _ExitTree() {
-		base._ExitTree();
-		
-		OnTouchDisabledChanged -= OnDisabledChanged;
-	}
-
 	public override void _Draw() {
 		_currentStyleBox = Normal;
 		if (_disabled != null && TouchDisabled) {
@@ -108,9 +96,5 @@ public partial class StyleBoxMobileButton : MobileButton {
 		
 		var rect = new Rect2(0, 0, Size);
 		DrawStyleBox(_currentStyleBox, rect);
-	}
-	
-	private void OnDisabledChanged(bool disabled) {
-		QueueRedraw();
 	}
 }
