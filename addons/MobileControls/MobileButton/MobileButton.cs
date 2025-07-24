@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Godot;
 
 namespace GodotMobileControls;
@@ -15,7 +13,7 @@ public partial class MobileButton : Control {
 		set {
 			var oldValue = _touchDisabled;
 			_touchDisabled = value;
-			
+
 			if (oldValue != value) {
 				QueueRedraw();
 			}
@@ -35,8 +33,9 @@ public partial class MobileButton : Control {
 			}
 		}
 	}
-	
+
 	private bool _buttonPressed;
+
 	[Export]
 	public bool ButtonPressed {
 		get => _buttonPressed;
@@ -46,22 +45,22 @@ public partial class MobileButton : Control {
 				QueueRedraw();
 				return;
 			}
-			
+
 			if (value == _buttonPressed) {
 				return;
 			}
 
-			if (value && IsInstanceValid(MobileButtonGroup)) {
-				if (IsInstanceValid(MobileButtonGroup.PressedButton)) {
-					MobileButtonGroup.PressedButton.ButtonPressed = false;
-				}
-				MobileButtonGroup.PressedButton = this;
-			}
-			
 			_buttonPressed = value;
-			
+
+			if (_buttonPressed) {
+				UnpressGroup();
+				if (IsInstanceValid(MobileButtonGroup)) {
+					MobileButtonGroup.EmitSignal(MobileButtonGroup.SignalName.Pressed, this);
+				}
+			}
+
 			QueueRedraw();
-			EmitSignalToggled(_buttonPressed);
+			EmitSignal(SignalName.Toggled, _buttonPressed);
 		}
 	}
 
@@ -69,7 +68,9 @@ public partial class MobileButton : Control {
 	[Export] public float LongPressActivationTime = 0.3f;
 
 	private MobileButtonGroup _mobileButtonGroup;
-	[Export] public MobileButtonGroup MobileButtonGroup {
+
+	[Export]
+	public MobileButtonGroup MobileButtonGroup {
 		get => _mobileButtonGroup;
 		set => SetMobileButtonGroup(value);
 	}
@@ -77,14 +78,14 @@ public partial class MobileButton : Control {
 	[ExportGroup("Animation")] 
 	[Export] public bool Animated = true;
 
-	[Export] public float Duration = 0.2f;
+	[Export] public float AnimationDuration = 0.2f;
 	[Export] public Vector2 ButtonDownScale = new(0.9f, 0.9f);
 	[Export] public Vector2 ButtonUpScale = new(1.05f, 1.05f);
 
 	public enum PivotPosition {
-		Start,
-		Center,
-		End
+		Start = 0,
+		Center = 1,
+		End = 2
 	}
 
 	[Export] public PivotPosition HPivotPosition = PivotPosition.Center;
@@ -97,53 +98,65 @@ public partial class MobileButton : Control {
 	private bool _isCanceled;
 	private float _touchDuration;
 
-	private TaskCompletionSource<bool> _taskCompletionSource;
 	private Tween _currentTween;
-	
+
 	public bool IsPressing => _isPressing;
-	
+
 	[Signal]
 	public delegate void TouchDownEventHandler();
+
 	[Signal]
 	public delegate void TouchUpEventHandler();
+
 	[Signal]
 	public delegate void TouchCancelEventHandler();
+
 	[Signal]
 	public delegate void TouchPressEventHandler();
-	
+
 	[Signal]
 	public delegate void TouchLongPressStartEventHandler();
+
 	[Signal]
 	public delegate void TouchLongPressDragEventHandler(InputEventScreenDrag drag);
+
 	[Signal]
 	public delegate void TouchLongPressEndEventHandler(InputEventScreenTouch touch);
+
 	[Signal]
 	public delegate void TouchLongPressCancelEventHandler();
+
 	[Signal]
 	public delegate void TouchLongPressEventHandler();
-	
+
 	[Signal]
 	public delegate void ToggledEventHandler(bool toggledOn);
 
-	public override void _EnterTree() {
-		SetPivotDeferred();
-
-		Resized += SetPivotDeferred;
+	public override void _Notification(int what) {
+		switch ((long)what) {
+			case NotificationReady:
+				SetPivot();
+				break;
+			case NotificationResized:
+				SetPivot();
+				break;
+		}
 	}
 
 	public override void _ExitTree() {
 		Scale = Vector2.One;
-
-		Resized -= SetPivotDeferred;
-
 		_currentTween?.Kill();
+
+		if (IsInstanceValid(MobileButtonGroup)) {
+			MobileButtonGroup.RemoveButton(this);
+		}
 	}
 
 	public override void _GuiInput(InputEvent @event) {
 		if (TouchDisabled) {
 			return;
 		}
-		
+
 		switch (@event) {
 			case InputEventScreenTouch touch: {
 				if (touch.IsPressed()) {
@@ -173,9 +186,9 @@ public partial class MobileButton : Control {
 			return;
 		}
 
-		if (_touchDuration > LongPressActivationTime && _dragDistance < GlobalSettings.MinDragCancelDistance) {
+		if (_touchDuration > LongPressActivationTime && _dragDistance < 25.0f) {
 			LongPressed = true;
-			EmitSignalTouchLongPressStart();
+			EmitSignal(SignalName.TouchLongPressStart);
 		}
 	}
 
@@ -184,11 +197,12 @@ public partial class MobileButton : Control {
 		_touchDuration = 0f;
 		_dragDistance = 0f;
 		_isCanceled = false;
-		
-		EmitSignalTouchDown();
+		LongPressed = false;
+
+		EmitSignal(SignalName.TouchDown);
 
 		if (Animated) {
-			_ = PlayShrinkAnimation();
+			PlayShrinkAnimation();
 		}
 	}
 
@@ -196,49 +210,64 @@ public partial class MobileButton : Control {
 		_dragDistance += drag.Relative.Length();
 
 		if (LongPressed) {
-			EmitSignalTouchLongPressDrag(drag);
+			EmitSignal(SignalName.TouchLongPressDrag, drag);
 		}
 
-		if (_dragDistance < GlobalSettings.MinDragCancelDistance || _isCanceled) {
+		if (_dragDistance < 25.0f || _isCanceled) {
 			return;
 		}
 
 		_isCanceled = true;
-		_taskCompletionSource.TrySetResult(false);
-		EmitSignalTouchCancel();
+
+		if (_currentTween != null) {
+			_currentTween.Kill();
+			Scale = Vector2.One;
+		}
+
+		EmitSignal(SignalName.TouchCancel);
 		if (LongPressed) {
-			EmitSignalTouchLongPressCancel();
+			EmitSignal(SignalName.TouchLongPressCancel);
 		}
 	}
 
 	private void HandleScreenTouchEnd(InputEventScreenTouch touch) {
 		_isPressing = false;
 
-		_taskCompletionSource?.TrySetResult(!_isCanceled);
+		if (_isCanceled) {
+			if (_currentTween != null) {
+				_currentTween.Kill();
+				Scale = Vector2.One;
+			}
+		}
+		else {
+			if (Animated) {
+				PlayGrowAnimation();
+			}
+			else {
+				Scale = Vector2.One;
+			}
+		}
 
 		if (!_isCanceled) {
 			if (ToggleMode) {
 				ButtonPressed = !ButtonPressed;
 			}
-			EmitSignalTouchPress();
-			
+
+			EmitSignal(SignalName.TouchPress);
+
 			if (LongPressed) {
-				EmitSignalTouchLongPress();
+				EmitSignal(SignalName.TouchLongPress);
 			}
 		}
 
 		if (LongPressed) {
-			EmitSignalTouchLongPressEnd(touch);
+			EmitSignal(SignalName.TouchLongPressEnd, touch);
 		}
-		
-		EmitSignalTouchUp();
+
+		EmitSignal(SignalName.TouchUp);
 
 		_touchDuration = 0f;
 		LongPressed = false;
-	}
-
-	private void SetPivotDeferred() {
-		Callable.From(SetPivot).CallDeferred();
 	}
 
 	private void SetPivot() {
@@ -273,26 +302,33 @@ public partial class MobileButton : Control {
 		catch (ObjectDisposedException) { }
 	}
 
-	private async Task PlayShrinkAnimation() {
-		_currentTween?.Kill();
+	private void UnpressGroup() {
+		if (!IsInstanceValid(MobileButtonGroup)) {
+			return;
+		}
 
-		_taskCompletionSource = new TaskCompletionSource<bool>();
+		if (ToggleMode && !MobileButtonGroup.IsAllowUnpress()) {
+			_buttonPressed = true;
+		}
+
+		foreach (var button in MobileButtonGroup.GetButtonsInternal()) {
+			if (button == this) {
+				continue;
+			}
+
+			button.ButtonPressed = false;
+		}
+	}
+
+	private void PlayShrinkAnimation() {
+		_currentTween?.Kill();
 
 		_currentTween = CreateTween()
 			.SetTrans(Tween.TransitionType.Sine)
 			.SetEase(Tween.EaseType.InOut);
 
-		_currentTween.TweenProperty(this, "scale", ButtonDownScale, Duration);
+		_currentTween.TweenProperty(this, "scale", ButtonDownScale, AnimationDuration);
 		_currentTween.Play();
-
-		var pressed = await _taskCompletionSource.Task;
-		_currentTween?.Kill();
-		if (!pressed) {
-			Scale = Vector2.One;
-			return;
-		}
-
-		PlayGrowAnimation();
 	}
 
 	private void PlayGrowAnimation() {
@@ -302,26 +338,18 @@ public partial class MobileButton : Control {
 			.SetTrans(Tween.TransitionType.Sine)
 			.SetEase(Tween.EaseType.InOut);
 
-		_currentTween.TweenProperty(this, "scale", ButtonUpScale, Duration * 0.5f);
-		_currentTween.TweenProperty(this, "scale", Vector2.One, Duration * 0.5f);
+		_currentTween.TweenProperty(this, "scale", ButtonUpScale, AnimationDuration * 0.5f);
+		_currentTween.TweenProperty(this, "scale", Vector2.One, AnimationDuration * 0.5f);
 		_currentTween.Play();
 	}
-	
+
 	private void SetMobileButtonGroup(MobileButtonGroup mobileButtonGroup) {
-		MobileButtonGroup?.Buttons.Remove(this);
+		MobileButtonGroup?.RemoveButton(this);
+
 		_mobileButtonGroup = mobileButtonGroup;
-		MobileButtonGroup?.Buttons.Add(this);
 
-		
-		if (ButtonPressed && IsInstanceValid(MobileButtonGroup)) {
-			foreach (var mobileButton in MobileButtonGroup.Buttons.Where(mobileButton => mobileButton != this)) {
-				mobileButton.ButtonPressed = false;
-				mobileButton.QueueRedraw();
-			}
+		MobileButtonGroup?.AddButton(this);
 
-			MobileButtonGroup.PressedButton = this;
-		}
-		
 		QueueRedraw();
 	}
 }

@@ -4,19 +4,11 @@ namespace GodotMobileControls;
 
 [Tool, GlobalClass, Icon("res://addons/MobileControls/Icons/SafeAreaContainer.svg")]
 public partial class SafeAreaContainer : MarginContainer {
-
-#if TOOLS
-	public override void _EnterTree() {
-		if (!Engine.IsEditorHint()) {
-			return;
+	public override void _Notification(int what) {
+		if (what == NotificationEnterTree) {
+			Callable.From(ConfigureFullScreenLayout).CallDeferred();
+			ApplySafeAreaMargins();
 		}
-
-		Callable.From(ConfigureFullScreenLayout).CallDeferred();
-	}
-#endif
-	
-	public override void _Ready() {
-		ApplySafeAreaMargins();
 	}
 	
 	private void ConfigureFullScreenLayout() {

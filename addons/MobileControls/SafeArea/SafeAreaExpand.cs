@@ -2,7 +2,7 @@
 
 namespace GodotMobileControls;
 
-[GlobalClass, Icon("res://addons/MobileControls/Icons/SafeAreaContainer.svg")]
+[Tool, GlobalClass, Icon("res://addons/MobileControls/Icons/SafeAreaContainer.svg")]
 public partial class SafeAreaExpand : Control {
 	public enum ExpandPositionEnum {
 		Left,
@@ -11,10 +11,19 @@ public partial class SafeAreaExpand : Control {
 		Bottom
 	}
 
-	[Export] public ExpandPositionEnum ExpandPosition = ExpandPositionEnum.Top;
+	private ExpandPositionEnum _expandPosition = ExpandPositionEnum.Top;
 
-	public override void _Ready() {
-		CustomMinimumSize = GetMinSize();
+	[Export]
+	public ExpandPositionEnum ExpandPosition {
+		get => _expandPosition;
+		set {
+			if (_expandPosition == value) {
+				return;
+			}
+
+			_expandPosition = value;
+			UpdateMinimumSize();
+		}
 	}
 
 	public override Vector2 _GetMinimumSize() {
